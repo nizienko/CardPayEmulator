@@ -19,7 +19,7 @@ var showGroups = function() {
 
 var chooseGroup = function(groupId, gName) {
     $('#parameters').html("");
-    $('#add_parameter').html("<a onclick=showAddParameter(" + groupId + ",'" + gName + "')>+ parameter</a>");
+    $('#add_parameter').html("<a onclick=showAddParameter(" + groupId + ",'" + gName + "')>+ parameter of " + gName + "</a>");
     $.ajax({
         type: "GET",
         cache: false,
@@ -49,7 +49,7 @@ var chooseParams = function(instanceId, iName) {
         url: '/parameters/' + instanceId,
         data: {'filter':filter},
         success: function (response) {
-            var html = "<table class='pure-table'>"+
+            var html = "<table id='parameters_table' instanceId=" + instanceId + " iName='" + iName + "' class='pure-table'>" +
             "<thead><tr><th><input onchange=chooseParams(" + instanceId + ",'" + iName + "') size=30 id='parameter_filter' type='text' value='" + filter + "'></th><th></th><th>" + iName + "</th></tr></thead>";
             $.each(response.data, function (i) {
                 var value = "";
@@ -191,6 +191,11 @@ var saveParameter = function(groupId, name) {
             data: {'groupId':groupId, 'name':name, 'description': description},
             success: function (response) {
                 if (response.result == "success") {
+                    if (document.getElementById('parameters_table') != null) {
+                        var instanceId =document.getElementById('parameters_table').getAttribute('instanceid');;
+                        var iName = document.getElementById('parameters_table').getAttribute('iname');;
+                        chooseParams(instanceId, iName);
+                    }
                     clearCenterContent()
                 }
                 else {
