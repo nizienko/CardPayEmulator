@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>Test settings manager</title>
+        <script src="js/jquery-1.12.0.min.js"></script>
+        <script src="js/parameters.js"></script>
+        <link rel="stylesheet" href="css/pure.min.css">
+    </head>
+    <body>
+        <div class="pure-g">
+            <div class="pure-u-1-5">
+                <div class="pure-menu custom-restricted-width" id="groups"></div>
+                <div class="pure-menu custom-restricted-width" id="instances"></div>
+            </div>
+            <div class="pure-u-4-5">
+                <div id="center-content"></div>
+                <div id="add_parameter"></div>
+                <div id="parameters"></div>
+            </div>
+        </div>
+    </body>
+
+    <script>
+        $(document).ready(function() {showGroups()});
+    </script>
+
+</html>
