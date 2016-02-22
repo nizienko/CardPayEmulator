@@ -54,7 +54,7 @@ public class TestSettingController extends ExceptionHandlerController {
     @RequestMapping(value = "/parameters/{instanceId}", method = RequestMethod.GET)
     public @ResponseBody
     Map<String, Object> getParameters(@PathVariable("instanceId") Long instanceId,
-                                      @RequestParam("filter") String filter) throws RestException {
+                                      @RequestParam(value = "filter", required = false) String filter) throws RestException {
         try {
             LOG.info("Incoming instanceId: " + instanceId);
             if (filter == null) {

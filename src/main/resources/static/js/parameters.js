@@ -72,6 +72,7 @@ var chooseParams = function(instanceId, iName) {
             $('#parameters').html(html);
         }
     });
+    setLink(instanceId, iName);
 }
 
 var showAddGroup = function(){
@@ -203,4 +204,9 @@ var saveParameter = function(groupId, name) {
                 }
             }
         });
+}
+
+var setLink = function(instanceId, name) {
+    var url = name + ": <i>" + document.URL + "parameters/" + instanceId + "</i>";
+    $('#link_for_tests').html(url);
 }
