@@ -57,11 +57,7 @@ public class TestSettingController extends ExceptionHandlerController {
                                       @RequestParam(value = "filter", required = false) String filter) throws RestException {
         try {
             LOG.info("Incoming instanceId: " + instanceId);
-            if (filter == null) {
-                return Ajax.successResponse(testSettingService.getParametersMap(instanceId));
-            } else {
-                return Ajax.successResponse(testSettingService.getParametersMap(instanceId, filter));
-            }
+            return Ajax.successResponse(testSettingService.getParametersMap(instanceId, filter));
         } catch (Exception e) {
             throw new RestException(e);
         }

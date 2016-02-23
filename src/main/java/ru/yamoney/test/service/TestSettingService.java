@@ -13,7 +13,6 @@ public interface TestSettingService {
     void addGroup(String groupName, String description);
     List<GroupInstance> getGroupInstances(long groupId);
     void addGroupInstance(long groupId, String name, String description);
-    List<KeyValue> getParametersMap(long instanceId);
     List<KeyValue> getParametersMap(long instanceId, String filter);
     void setParameter(long instanceId, long parameterId, String value);
     void addParameter(long groupId, String name, String description);

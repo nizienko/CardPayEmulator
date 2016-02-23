@@ -75,11 +75,6 @@ public class TestSettingServiceImpl implements TestSettingService {
     }
 
     @Override
-    public List<KeyValue> getParametersMap(long instanceId) {
-        return getParametersMap(instanceId, null);
-    }
-
-    @Override
     public void setParameter(long instanceId, long parameterId, String value) {
         try {
             ParameterValue parameterValue = (ParameterValue) valueRepository.fetchById(instanceId, parameterId);
