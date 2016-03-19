@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ru.yamoney.test</groupId>
-	<artifactId>qaparam</artifactId>
+	<artifactId>CardPayEmulator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>qaparam</name>
-	<description>Parameter manager for integration autotests</description>
+	<name>CardPayEmulator</name>
+	<description>Card Pay Emulator</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
