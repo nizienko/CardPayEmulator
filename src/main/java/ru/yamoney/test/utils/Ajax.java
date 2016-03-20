@@ -1,5 +1,7 @@
 package ru.yamoney.test.utils;
 
+import ru.yamoney.test.services.card_pay.PayCardResult;
+
 import java.util.HashMap;
 import java.util.Map;
 

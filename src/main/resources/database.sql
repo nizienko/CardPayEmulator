@@ -6,3 +6,18 @@ CREATE DATABASE card_pay
        LC_CTYPE = 'Russian_Russia.1251'
        CONNECTION LIMIT = -1;
 
+
+CREATE TABLE public."order"
+(
+  id integer NOT NULL DEFAULT nextval('order_id_seq'::regclass),
+  changed_date timestamp with time zone,
+  created_date timestamp with time zone NOT NULL,
+  status integer,
+  status_message text,
+  CONSTRAINT order_pk PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public."order"
+  OWNER TO postgres;
