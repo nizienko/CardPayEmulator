@@ -5,7 +5,7 @@ var pay = function() {
     var holder = document.getElementById('holder').value;
     var cvc = document.getElementById('cvc').value;
     var sum = document.getElementById('sum').value;
-
+    showContent("Подождите...");
     $.ajax({
         type: "POST",
         cache: false,
@@ -21,9 +21,10 @@ var pay = function() {
         success: function (response) {
             if (response.result == "success")
             {
-                showSuccess(response.data.message);
+                showContent(response.data.message);
             }
             else {
+                showContent("Ошибка");
                 alert(response.message);
             }
         },
@@ -33,6 +34,6 @@ var pay = function() {
     });
 }
 
-var showSuccess = function(message) {
-    $('#result').html(message);
+var showContent = function(content) {
+    $('#content').html(content);
 }
