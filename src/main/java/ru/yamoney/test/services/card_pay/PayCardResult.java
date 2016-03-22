@@ -59,4 +59,12 @@ public class PayCardResult {
             return message;
         }
     }
+
+    @Override
+    public String toString() {
+        return "PayCardResult{" +
+                "resultCode=" + resultCode +
+                ", message=" + message +
+                '}';
+    }
 }

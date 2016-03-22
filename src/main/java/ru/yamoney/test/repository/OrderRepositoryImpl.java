@@ -38,7 +38,20 @@ public class OrderRepositoryImpl implements OrderRepository<Order> {
 
     @Override
     public void update(Order data) {
+        final String sql = "UPDATE \"order\"\n" +
+                "   SET changed_date=?, created_date=?, status=?, status_message=?, \n" +
+                "       order_n=?\n" +
+                " WHERE id=?;";
 
+        final Object[] orderData = new Object[]{
+                data.getChangedDate(),
+                data.getCreatedDate(),
+                data.getStatus().getCode(),
+                data.getStatusMessage(),
+                data.getOrderN(),
+                data.getId()
+        };
+        jdbcOperations.update(sql, orderData);
     }
 
     @Override

@@ -16,7 +16,7 @@ public class Order implements DataBaseEntity {
     private String statusMessage;
 
     public static enum Status {
-        CREATED(1), AUTHORIZE(2), CLEAR(3), ERROR(10);
+        CREATED(1), AUTHORIZE(2), CLEAR(3), DECLINED(4), ERROR(10);
 
         private int status;
 
@@ -33,6 +33,7 @@ public class Order implements DataBaseEntity {
                 case 1 : return CREATED;
                 case 2 : return AUTHORIZE;
                 case 3 : return CLEAR;
+                case 4 : return DECLINED;
                 case 10 : return ERROR;
                 default: return ERROR;
             }

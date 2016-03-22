@@ -20,7 +20,7 @@ public class MoscowBankAcquireService implements BankAcquireService {
     @Override
     public BankAcquireResponse authorize(Card card, BigDecimal sum) {
         final BankAcquireResponse bankAcquireResponse = new BankAcquireResponse();
-        LOG.info("Отправляем запрос на авторизацию операции в банк экваер");
+        LOG.info(String.format("Отправляем запрос на авторизацию операции на сумму %s в банк экваер: %s", sum, card));
 
         if (card.getCvc() == 003) {
             bankAcquireResponse.setOperationStatus(OperationStatus.DECLINED);

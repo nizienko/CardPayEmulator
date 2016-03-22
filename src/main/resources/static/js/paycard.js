@@ -6,6 +6,7 @@ var pay = function() {
     var cvc = document.getElementById('cvc').value;
     var sum = document.getElementById('sum').value;
     showContent("Подождите...");
+    document.getElementById('pay_form').style.visibility='hidden';
     $.ajax({
         type: "POST",
         cache: false,
@@ -22,18 +23,26 @@ var pay = function() {
             if (response.result == "success")
             {
                 showContent(response.data.message);
+                document.getElementById('one_more').style.visibility='visible';
             }
             else {
-                showContent("Ошибка");
-                alert(response.message);
+                showContent("Ошибка: " + response.message);
+                document.getElementById('one_more').style.visibility='visible';
             }
         },
         error: function(xhr, ajaxOptions, thrownError) {
-            alert(xhr.statusText + '\n' + xhr.responseText);
+            showContent("Ошибка: " + xhr.statusText + "<br>" + xhr.responseText);
+            document.getElementById('one_more').style.visibility='visible';
         }
     });
 }
 
 var showContent = function(content) {
     $('#content').html(content);
+}
+
+var oneMore = function(content) {
+    $('#content').html("");
+    document.getElementById('pay_form').style.visibility='visible';
+    document.getElementById('one_more').style.visibility='hidden';
 }
