@@ -10,4 +10,5 @@ import java.math.BigDecimal;
 
 public interface BankAcquireService {
     BankAcquireResponse authorize(Card card, BigDecimal sum);
+    Integer getBankId();
 }

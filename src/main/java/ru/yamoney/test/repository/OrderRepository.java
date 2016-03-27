@@ -5,5 +5,4 @@ package ru.yamoney.test.repository;
  */
 public interface OrderRepository<V extends DataBaseEntity> extends CommonRepository<V> {
     V fetchByOrderN(String orderN);
-
 }

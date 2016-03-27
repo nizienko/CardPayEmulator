@@ -35,8 +35,8 @@ public class Order implements DataBaseEntity {
                 case 3 : return CLEAR;
                 case 4 : return DECLINED;
                 case 10 : return ERROR;
-                default: return ERROR;
             }
+            throw new IllegalArgumentException(String.format("Неизвестный код статуса приказа %s", code));
         }
     }
 

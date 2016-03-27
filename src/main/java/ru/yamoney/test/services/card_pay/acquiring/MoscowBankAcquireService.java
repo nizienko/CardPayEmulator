@@ -43,4 +43,8 @@ public class MoscowBankAcquireService implements BankAcquireService {
             e.printStackTrace();
         }
     }
+
+    public Integer getBankId(){
+        return 7;
+    }
 }

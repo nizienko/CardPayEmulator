@@ -20,5 +20,25 @@ CREATE TABLE "order"
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE public."order"
+ALTER TABLE "order"
   OWNER TO postgres;
+
+
+CREATE TABLE operation
+  (
+    id integer NOT NULL DEFAULT nextval('operation_id_seq'::regclass),
+    order_id integer NOT NULL DEFAULT nextval('operation_order_id_seq'::regclass),
+    operation_type integer,
+    status integer,
+    bank_acquire_id integer,
+    request_params text,
+    response_params text,
+    changed_date timestamp with time zone,
+    created_date timestamp with time zone,
+    CONSTRAINT operation_pk PRIMARY KEY (id)
+  )
+  WITH (
+    OIDS=FALSE
+  );
+  ALTER TABLE operation
+    OWNER TO postgres;
