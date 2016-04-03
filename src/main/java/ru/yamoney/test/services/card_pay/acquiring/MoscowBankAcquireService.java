@@ -22,8 +22,36 @@ public class MoscowBankAcquireService implements BankAcquireService {
         final BankAcquireResponse bankAcquireResponse = new BankAcquireResponse();
         LOG.info(String.format("Отправляем запрос на авторизацию операции на сумму %s в банк экваер: %s", sum, card));
 
-        if (card.getCvc() == 003) {
+        if (card.getCvc().equals("003")) {
             bankAcquireResponse.setOperationStatus(OperationStatus.DECLINED);
+        }
+        else if (card.getCvc().equals("005")) {
+            bankAcquireResponse.setOperationStatus(OperationStatus.ERROR);
+        }
+        else if (card.getCvc().equals("007")) {
+            bankAcquireResponse.setOperationStatus(OperationStatus.DO_NOT_HONOR);
+        }
+        else {
+            bankAcquireResponse.setOperationStatus(OperationStatus.SUCCESS);
+        }
+        delay();
+        LOG.info("Получен ответ от банка экваера: " + bankAcquireResponse);
+        return bankAcquireResponse;
+    }
+
+    @Override
+    public BankAcquireResponse clear(String operationId, BigDecimal sum) {
+        final BankAcquireResponse bankAcquireResponse = new BankAcquireResponse();
+        LOG.info(String.format("Отправляем запрос на клиринг операции %s на сумму %s в банк экваер", operationId, sum));
+
+        if (sum.compareTo(BigDecimal.TEN) == 0) {
+            bankAcquireResponse.setOperationStatus(OperationStatus.DECLINED);
+        }
+        else if (sum.compareTo(new BigDecimal("12")) == 0) {
+            bankAcquireResponse.setOperationStatus(OperationStatus.ERROR);
+        }
+        else if (sum.compareTo(new BigDecimal("14")) == 0) {
+            bankAcquireResponse.setOperationStatus(OperationStatus.DO_NOT_HONOR);
         }
         else {
             bankAcquireResponse.setOperationStatus(OperationStatus.SUCCESS);

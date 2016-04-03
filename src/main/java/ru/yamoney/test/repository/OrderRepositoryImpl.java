@@ -38,6 +38,7 @@ public class OrderRepositoryImpl implements OrderRepository<Order> {
 
     @Override
     public void update(Order data) {
+        data.setChangedDate(new Date());
         final String sql = "UPDATE \"order\"\n" +
                 "   SET changed_date=?, created_date=?, status=?, status_message=?, \n" +
                 "       order_n=?\n" +
@@ -74,6 +75,13 @@ public class OrderRepositoryImpl implements OrderRepository<Order> {
         final String sql = "SELECT id, changed_date, created_date, status, status_message, order_n\n" +
                 "  FROM \"order\" where order_n=?;";
         return jdbcOperations.queryForObject(sql, new Object[]{orderN}, new OrderMapper());
+    }
+
+    @Override
+    public List<Order> fetchForClearing() {
+        final String sql = "SELECT id, changed_date, created_date, status, status_message, order_n\n" +
+                "  FROM \"order\" where status=2 and created_date < current_timestamp - time '0:05';";
+        return jdbcOperations.query(sql, new OrderMapper());
     }
 
     private static class OrderMapper implements RowMapper<Order> {

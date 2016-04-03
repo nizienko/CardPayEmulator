@@ -1,7 +1,5 @@
 package ru.yamoney.test.services.card_pay.acquiring;
 
-import com.sun.xml.internal.ws.wsdl.writer.document.BindingOperationType;
-import ru.yamoney.test.services.card_pay.Operation;
 
 /**
  * Created by def on 20.03.2016.

@@ -37,7 +37,7 @@ public class PayCardController {
             @RequestParam("month") Integer month,
             @RequestParam("year") Integer year,
             @RequestParam("holder") String holder,
-            @RequestParam("cvc") Integer cvc,
+            @RequestParam("cvc") String cvc,
             @RequestParam("sum") String sum
     ) throws RestException {
         try {

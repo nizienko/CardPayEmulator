@@ -24,7 +24,7 @@ public class OperationRepositoryImpl implements OperationRepository<Operation> {
     @Override
     public List<Operation> getByOrderId(Integer id) {
         final Object[] orderData = new Object[]{id};
-        final String sql = "SELECT id, order_id, operation_type, status, bank_acquire_id, request_params, \n" +
+        final String sql = "SELECT id, order_id, sum, operation_type, status, bank_acquire_id, request_params, \n" +
                 "       response_params, changed_date, created_date\n" +
                 "  FROM operation where order_id=?;\n";
         return jdbcOperations.query(sql, orderData, new OperationMapper());
@@ -35,6 +35,7 @@ public class OperationRepositoryImpl implements OperationRepository<Operation> {
         data.setChangedDate(new Date());
         final Object[] orderData = new Object[]{
                 data.getOrderId(),
+                data.getSum(),
                 data.getOperationType().getCode(),
                 data.getStatus().getCode(),
                 data.getBankAcquireId(),
@@ -44,9 +45,9 @@ public class OperationRepositoryImpl implements OperationRepository<Operation> {
                 data.getCreatedDate()
         };
         final String sql = "INSERT INTO operation(\n" +
-                "            order_id, operation_type, status, bank_acquire_id, request_params, \n" +
+                "            order_id, sum, operation_type, status, bank_acquire_id, request_params, \n" +
                 "            response_params, changed_date, created_date)\n" +
-                "    VALUES (?, ?, ?, ?, ?, \n" +
+                "    VALUES (?, ?, ?, ?, ?, ?, \n" +
                 "            ?, ?, ?);\n";
         jdbcOperations.update(sql, orderData);
     }
@@ -56,6 +57,7 @@ public class OperationRepositoryImpl implements OperationRepository<Operation> {
         data.setChangedDate(new Date());
         final Object[] orderData = new Object[]{
                 data.getOrderId(),
+                data.getSum(),
                 data.getOperationType().getCode(),
                 data.getStatus().getCode(),
                 data.getBankAcquireId(),
@@ -66,7 +68,7 @@ public class OperationRepositoryImpl implements OperationRepository<Operation> {
                 data.getId()
         };
         final String sql = "UPDATE operation\n" +
-                "   SET order_id=?, operation_type=?, status=?, bank_acquire_id=?, \n" +
+                "   SET order_id=?, sum=?, operation_type=?, status=?, bank_acquire_id=?, \n" +
                 "       request_params=?, response_params=?, changed_date=?, created_date=?\n" +
                 " WHERE id=?;\n";
         jdbcOperations.update(sql, orderData);
@@ -85,7 +87,7 @@ public class OperationRepositoryImpl implements OperationRepository<Operation> {
     @Override
     public Operation fetchById(long id) {
         final Object[] orderData = new Object[]{id};
-        final String sql = "SELECT id, order_id, operation_type, status, bank_acquire_id, request_params, \n" +
+        final String sql = "SELECT id, order_id, sum, operation_type, status, bank_acquire_id, request_params, \n" +
                 "       response_params, changed_date, created_date\n" +
                 "  FROM operation where id=?;\n";
         return jdbcOperations.queryForObject(sql, orderData, new OperationMapper());
@@ -98,6 +100,7 @@ public class OperationRepositoryImpl implements OperationRepository<Operation> {
             final Operation operation = new Operation();
             operation.setId(resultSet.getInt("id"));
             operation.setOrderId(resultSet.getInt("order_id"));
+            operation.setSum(resultSet.getBigDecimal("sum"));
             operation.setOperationType(Operation.OperationType.getOperationType(resultSet.getInt("operation_type")));
             operation.setStatus(Operation.Status.getStatus(resultSet.getInt("status")));
             operation.setBankAcquireId(resultSet.getInt("bank_acquire_id"));

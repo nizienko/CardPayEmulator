@@ -45,7 +45,7 @@ public class PayCardServiceImpl implements PayCardService {
     public PayCardResult payViaCard(Card card, BigDecimal sum, String shop) {
         LOG.info(String.format("Получен запрос на платеж с параметрами: Карта %s, Сумма %s, Магазин %s", card, sum, shop));
         // Проверим валидность номера карты
-        if(!CardUtils.isCardNumberValid(card.getCardNumber())) {
+        if(!CardUtils.isCardNumberValid(card.getCardNumber()) || card.getCardNumber().length() < 14 || card.getCardNumber().length() > 19) {
             LOG.error(INVALID_CARD_NUMBER.getMessage());
             return new PayCardResult(ERROR, INVALID_CARD_NUMBER);
         }
@@ -73,9 +73,9 @@ public class PayCardServiceImpl implements PayCardService {
         // Создаем операцию
         final Operation operation = new Operation();
         operation.setOrderId(createdOrder.getId());
+        operation.setSum(sum);
         operation.setOperationType(Operation.OperationType.AUTHORIZE);
         operation.setStatus(Operation.Status.CREATED);
-        operation.setChangedDate(new Date());
         operation.setCreatedDate(new Date());
 
         operationRepository.insert(operation);
@@ -109,6 +109,20 @@ public class PayCardServiceImpl implements PayCardService {
                 break;
             }
             case DECLINED: {
+                authorizeOperation.setStatus(Operation.Status.ERROR);
+                createdOrder.setStatus(Order.Status.DECLINED);
+                payCardResult.setResultCode(DECLINED);
+                payCardResult.setMessage(PayCardResult.Message.DECLINED);
+                break;
+            }
+            case ERROR: {
+                authorizeOperation.setStatus(Operation.Status.ERROR);
+                createdOrder.setStatus(Order.Status.ERROR);
+                payCardResult.setResultCode(ERROR);
+                payCardResult.setMessage(PayCardResult.Message.UNKNOWN_ERROR);
+                break;
+            }
+            case DO_NOT_HONOR: {
                 authorizeOperation.setStatus(Operation.Status.ERROR);
                 createdOrder.setStatus(Order.Status.DECLINED);
                 payCardResult.setResultCode(DECLINED);

@@ -1,10 +1,11 @@
-CREATE DATABASE card_pay
-  WITH OWNER = postgres
-       ENCODING = 'UTF8'
-       TABLESPACE = pg_default
-       LC_COLLATE = 'Russian_Russia.1251'
-       LC_CTYPE = 'Russian_Russia.1251'
-       CONNECTION LIMIT = -1;
+CREATE SEQUENCE order_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE public.order_id_seq
+  OWNER TO postgres;
 
 
 CREATE TABLE "order"
@@ -23,11 +24,20 @@ WITH (
 ALTER TABLE "order"
   OWNER TO postgres;
 
+CREATE SEQUENCE public.operation_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE public.operation_id_seq
+  OWNER TO postgres;
 
 CREATE TABLE operation
   (
     id integer NOT NULL DEFAULT nextval('operation_id_seq'::regclass),
-    order_id integer NOT NULL DEFAULT nextval('operation_order_id_seq'::regclass),
+    order_id integer NOT NULL,
+    sum numeric(10,2),
     operation_type integer,
     status integer,
     bank_acquire_id integer,

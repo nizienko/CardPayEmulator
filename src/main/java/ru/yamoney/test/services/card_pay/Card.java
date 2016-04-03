@@ -8,7 +8,7 @@ public class Card {
     private Integer month;
     private Integer year;
     private String holder;
-    private Integer cvc;
+    private String cvc;
 
     public String getCardNumber() {
         return cardNumber;
@@ -42,11 +42,17 @@ public class Card {
         this.holder = holder;
     }
 
-    public Integer getCvc() {
+    public String getCvc() {
         return cvc;
     }
 
-    public void setCvc(Integer cvc) {
+    public void setCvc(String cvc) {
+        try {
+            Integer.parseInt(cvc);
+        }
+        catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Что-то не так с CVC");
+        }
         this.cvc = cvc;
     }
 

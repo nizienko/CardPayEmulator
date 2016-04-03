@@ -2,6 +2,7 @@ package ru.yamoney.test.services.card_pay;
 
 import ru.yamoney.test.repository.DataBaseEntity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -12,6 +13,7 @@ public class Operation implements DataBaseEntity {
     private Integer orderId;
     private OperationType operationType;
     private Status status;
+    private BigDecimal sum;
     private Integer bankAcquireId;
     private String requestParams;
     private String responseParams;
@@ -137,6 +139,14 @@ public class Operation implements DataBaseEntity {
         this.changedDate = changedDate;
     }
 
+    public BigDecimal getSum() {
+        return sum;
+    }
+
+    public void setSum(BigDecimal sum) {
+        this.sum = sum;
+    }
+
     @Override
     public String toString() {
         return "Operation{" +
@@ -144,6 +154,7 @@ public class Operation implements DataBaseEntity {
                 ", orderId=" + orderId +
                 ", operationType=" + operationType +
                 ", status=" + status +
+                ", sum=" + sum +
                 ", bankAcquireId=" + bankAcquireId +
                 ", requestParams='" + requestParams + '\'' +
                 ", responseParams='" + responseParams + '\'' +

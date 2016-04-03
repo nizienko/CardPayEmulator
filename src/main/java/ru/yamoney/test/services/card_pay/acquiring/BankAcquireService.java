@@ -10,5 +10,6 @@ import java.math.BigDecimal;
 
 public interface BankAcquireService {
     BankAcquireResponse authorize(Card card, BigDecimal sum);
+    BankAcquireResponse clear(String operationId, BigDecimal sum);
     Integer getBankId();
 }

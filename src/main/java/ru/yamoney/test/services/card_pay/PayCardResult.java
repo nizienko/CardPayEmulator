@@ -42,7 +42,7 @@ public class PayCardResult {
         SUCCESS, DECLINED, ERROR;
     }
 
-    public static enum Message {
+    public enum Message {
         SUCCESS("Платеж успешно завершен"),
         INVALID_CARD_NUMBER("Номер карты не валиден"),
         CARD_EXPIRED("Карта просрочена"),
