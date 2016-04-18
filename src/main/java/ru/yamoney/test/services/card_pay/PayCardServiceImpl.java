@@ -18,9 +18,7 @@ import java.util.List;
 import static ru.yamoney.test.services.card_pay.PayCardResult.Code.DECLINED;
 import static ru.yamoney.test.services.card_pay.PayCardResult.Code.ERROR;
 import static ru.yamoney.test.services.card_pay.PayCardResult.Code.SUCCESS;
-import static ru.yamoney.test.services.card_pay.PayCardResult.Message.CARD_EXPIRED;
-import static ru.yamoney.test.services.card_pay.PayCardResult.Message.INVALID_CARD_NUMBER;
-import static ru.yamoney.test.services.card_pay.PayCardResult.Message.UNKNOWN_ERROR;
+import static ru.yamoney.test.services.card_pay.PayCardResult.Message.*;
 
 /**
  * Created by nizienko on 19.03.2016.
@@ -53,6 +51,14 @@ public class PayCardServiceImpl implements PayCardService {
         if (CardUtils.isCardExpired(card.getMonth(), card.getYear())){
             LOG.error(CARD_EXPIRED.getMessage());
             return new PayCardResult(ERROR, CARD_EXPIRED);
+        }
+
+        if (card.getCvc().length() != 3 && card.getCvc().length() != 4) {
+            return new PayCardResult(ERROR, BAD_CVC);
+        }
+
+        if (sum.compareTo(BigDecimal.ZERO) <= 0) {
+            return new PayCardResult(ERROR, BAD_SUM);
         }
 
         // Создадим новый приказ

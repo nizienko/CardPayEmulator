@@ -9,64 +9,89 @@
         <link rel="icon" type="image/x-icon" href="/favicon.ico">
     </head>
     <body>
-        <fieldset>
-            <div id="content"></div>
-            <div id="one_more" style="visibility: hidden;">
-                <div class="pure-controls">
-                    <button type="button" onclick=oneMore() class="pure-button pure-button-primary">Еще раз</button>
+        <div class="pure-g">
+            <div class="pure-u-2-3">
+                <div id="content"></div>
+                <div id="one_more" style="visibility: hidden;">
+                    <div class="pure-controls">
+                        <button type="button" onclick=oneMore() class="pure-button pure-button-primary">Еще раз</button>
+                    </div>
+                </div>
+                <div id="pay_form">
+                    <form class="pure-form pure-form-aligned">
+                        <legend><h3>Оплата банковской картой</h3></legend>
+                        <div class="pure-control-group">
+                            <label for="sum">Сумма платежа</label>
+                            <input id="sum" type="text" placeholder="sum" required>
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="cardNumber">Номер карты</label>
+                            <input id="cardNumber" type="text" placeholder="card number" required>
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="validUntilMonth">Действует до</label>
+                            <select id="validUntilMonth">
+                                <option>01</option>
+                                <option>02</option>
+                                <option>03</option>
+                                <option>04</option>
+                                <option>05</option>
+                                <option>06</option>
+                                <option>07</option>
+                                <option>08</option>
+                                <option>09</option>
+                                <option>10</option>
+                                <option>11</option>
+                                <option>12</option>
+                            </select>
+                            <select id="validUntilYear">
+                                <option>2016</option>
+                                <option>2017</option>
+                                <option>2018</option>
+                                <option>2019</option>
+                                <option>2020</option>
+                                <option>2021</option>
+                            </select>
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="holder">Имя и фамилия владельца</label>
+                            <input id="holder" type="text" placeholder="cardholder name">
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="cvc">Код CVC</label>
+                            <input id="cvc" type="text" placeholder="cvc">
+                        </div>
+                        <div class="pure-controls">
+                            <button type="button" onclick=pay() class="pure-button pure-button-primary">Оплатить</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </fieldset>
-        <div id="pay_form">
-            <form class="pure-form pure-form-aligned">
-                <fieldset>
-                    <legend>Оплата с банковской карты</legend>
-                    <div class="pure-control-group">
-                        <label for="sum">Сумма платежа</label>
-                        <input id="sum" type="text" placeholder="sum" required>
-                    </div>
-                    <div class="pure-control-group">
-                        <label for="cardNumber">Введите номер карты</label>
-                        <input id="cardNumber" type="text" placeholder="card number" required>
-                    </div>
-                    <div class="pure-control-group">
-                        <label for="validUntilMonth">Действует до</label>
-                        <select id="validUntilMonth">
-                            <option>01</option>
-                            <option>02</option>
-                            <option>03</option>
-                            <option>04</option>
-                            <option>05</option>
-                            <option>06</option>
-                            <option>07</option>
-                            <option>08</option>
-                            <option>09</option>
-                            <option>10</option>
-                            <option>11</option>
-                            <option>12</option>
-                        </select>
-                        <select id="validUntilYear">
-                            <option>2016</option>
-                            <option>2017</option>
-                            <option>2018</option>
-                            <option>2019</option>
-                            <option>2020</option>
-                            <option>2021</option>
-                        </select>
-                    </div>
-                    <div class="pure-control-group">
-                        <label for="holder">Имя и фамилия владельца</label>
-                        <input id="holder" type="text" placeholder="card holder">
-                    </div>
-                    <div class="pure-control-group">
-                        <label for="cvc">Код CVV</label>
-                        <input id="cvc" type="text" placeholder="cvc">
-                    </div>
-                    <div class="pure-controls">
-                        <button type="button" onclick=pay() class="pure-button pure-button-primary">Оплатить</button>
-                    </div>
-                </fieldset>
-            </form>
+            <div class="pure-u-1-3">
+                <div class="post-description">
+                    <h3>Описание</h3>
+                    <p>Платеж картой выполняется через один из наших партнерских банков-эквайеров, в два этапа: авторизация (блокирование денежных средств) и клиринг (списание денежных средств). После сабмита формы бэкенд валидирует номер карты и отправляет запрос на авторизацию в банк-эквайер. В ответ на сабмит приходит результат авторизации.
+                    </p>
+                    <p>После того, как деньги на карте заблокированы, мы можем совершить сделку - отдать товар, пополнить счет мобильного телефона и т.п. Далее мы можем провести клиринг - окончательно списать деньги с карты. В этом эмуляторе запрос на клиринг отправляется в банк-эквайер через 5 минут после авторизации.</p>
+                    <hr><h3>Управление не-SUCCESS ответом банка-эквайера</h3>
+                    <b>Запрос на авторизацию:</b><br>
+                    CVC=003, DECLINED<br>
+                    CVC=005, ERROR<br>
+                    CVC=007, DO_NOT_HONOR<br>
+                    <b>Запрос на клиринг:</b><br>
+                    SUM=10, DECLINED<br>
+                    SUM=12, ERROR<br>
+                    SUM=14, DO_NOT_HONOR<br>
+                    <hr><h3>Примеры валидных номеров карт:</h3>
+                    5106213767966881<br>
+                    5106210633317844<br>
+                    5106211747343015<br>
+                    5106219175573532<br>
+                    5106213826348642<br>
+                    5106216530092000<br>
+                    5106217575300084<br>
+                </div>
+            </div>
         </div>
     </body>
 </html>

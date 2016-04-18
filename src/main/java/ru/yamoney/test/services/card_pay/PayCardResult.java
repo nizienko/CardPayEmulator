@@ -46,6 +46,8 @@ public class PayCardResult {
         SUCCESS("Платеж успешно завершен"),
         INVALID_CARD_NUMBER("Номер карты не валиден"),
         CARD_EXPIRED("Карта просрочена"),
+        BAD_CVC("CVC не валиден"),
+        BAD_SUM("Укажите правильную сумму больше 0"),
         UNKNOWN_ERROR("Произошла ошибка"),
         DECLINED("Банк отклонил операцию");
 
