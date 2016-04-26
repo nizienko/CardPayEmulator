@@ -52,11 +52,11 @@ public class MoscowBankAcquireService implements BankAcquireService {
             bankAcquireResponse.setOperationStatus(OperationStatus.TOO_MANY_CONNECTIONS);
         }
         else {
-            delay();
+            delay(1000);
         }
 
-        LOG.info("Получен ответ от банка экваера: " + bankAcquireResponse);
         bankAcquireResponse.setOperationType(BankAcquireResponse.OperationType.AUTHORIZE);
+        LOG.info("Получен ответ от банка экваера: " + bankAcquireResponse);
         delWorker();
         return bankAcquireResponse;
     }
@@ -84,11 +84,10 @@ public class MoscowBankAcquireService implements BankAcquireService {
             bankAcquireResponse.setOperationStatus(OperationStatus.TOO_MANY_CONNECTIONS);
         }
         else {
-            delay();
+            delay(20);
         }
-
-        LOG.info("Получен ответ от банка экваера: " + bankAcquireResponse);
         bankAcquireResponse.setOperationType(BankAcquireResponse.OperationType.CLEAR);
+        LOG.info("Получен ответ от банка экваера: " + bankAcquireResponse);
         delWorker();
         return bankAcquireResponse;
     }
@@ -96,9 +95,9 @@ public class MoscowBankAcquireService implements BankAcquireService {
     /*
         Искуственная задержка
      */
-    private void delay() {
+    private void delay(int t) {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(t);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
