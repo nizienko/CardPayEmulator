@@ -6,20 +6,20 @@ import ru.yamoney.test.services.card_pay.PayCardResult;
  * Created by def on 20.03.2016.
  */
 public class PayCardResponseEntity implements DomainObject {
-    private String result;
+    private String status;
     private String message;
 
     public PayCardResponseEntity(PayCardResult payCardResult) {
-        this.result = payCardResult.getResultCode().name().toLowerCase();
+        this.status = payCardResult.getResultCode().name().toLowerCase();
         this.message = payCardResult.getMessage().getMessage();
     }
 
-    public String getResult() {
-        return result;
+    public String getStatus() {
+        return status;
     }
 
-    public void setResult(String result) {
-        this.result = result;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getMessage() {

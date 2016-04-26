@@ -47,8 +47,9 @@ public class PayCardResult {
         INVALID_CARD_NUMBER("Номер карты не валиден"),
         CARD_EXPIRED("Карта просрочена"),
         BAD_CVC("CVC не валиден"),
-        BAD_SUM("Укажите правильную сумму больше 0"),
+        BAD_SUM("Сумма должна быть больше 0, но не больше 700000"),
         UNKNOWN_ERROR("Произошла ошибка"),
+        BANK_BOTTLENECK_REACHED("Банк-экваер не успевает обрабатывать запросы"),
         DECLINED("Банк отклонил операцию");
 
         private String message;

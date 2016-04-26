@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yamoney.test.repository.OperationRepository;
-import ru.yamoney.test.repository.OrderRepository;
+import ru.yamoney.test.repository.PaymentRepository;
 import ru.yamoney.test.services.card_pay.acquiring.BankAcquireResponse;
 import ru.yamoney.test.services.card_pay.acquiring.BankAcquireService;
 import ru.yamoney.test.utils.CardUtils;
@@ -32,8 +32,8 @@ public class PayCardServiceImpl implements PayCardService {
     private BankAcquireService bankAcquireService;
 
     @Autowired
-    @Qualifier("orderRepository")
-    private OrderRepository orderRepository;
+    @Qualifier("paymentRepository")
+    private PaymentRepository paymentRepository;
 
     @Autowired
     @Qualifier("operationRepository")
@@ -57,35 +57,35 @@ public class PayCardServiceImpl implements PayCardService {
             return new PayCardResult(ERROR, BAD_CVC);
         }
 
-        if (sum.compareTo(BigDecimal.ZERO) <= 0) {
+        if (sum.compareTo(BigDecimal.ZERO) <= 0 || sum.compareTo(new BigDecimal("700000")) > 0) {
             return new PayCardResult(ERROR, BAD_SUM);
         }
 
-        // Создадим новый приказ
-        final Order order = new Order();
-        order.generateOrderN();
-        order.setCreatedDate(new Date());
-        order.setStatus(Order.Status.CREATED);
-        order.setStatusMessage("Запрос принят в обработку");
-        LOG.info(String.format("Создан новый приказ: %s", order));
+        // Создадим новый платеж
+        final Payment payment = new Payment();
+        payment.generatePaymentN();
+        payment.setCreatedDate(new Date());
+        payment.setStatus(Payment.Status.CREATED);
+        payment.setStatusMessage("Запрос принят в обработку");
+        LOG.info(String.format("Создан новый платеж: %s", payment));
 
         // Сохраним приказ в БД
-        orderRepository.insert(order);
+        paymentRepository.insert(payment);
 
-        final Order createdOrder = (Order) orderRepository.fetchByOrderN(order.getOrderN());
-        LOG.info(String.format("Приказ сохранен в базе данных: %s", createdOrder));
+        final Payment createdPayment = (Payment) paymentRepository.fetchByOrderN(payment.getPaymentN());
+        LOG.info(String.format("Платеж сохранен в базе данных: %s", createdPayment));
 
 
         // Создаем операцию
         final Operation operation = new Operation();
-        operation.setOrderId(createdOrder.getId());
+        operation.setPaymentId(createdPayment.getId());
         operation.setSum(sum);
         operation.setOperationType(Operation.OperationType.AUTHORIZE);
         operation.setStatus(Operation.Status.CREATED);
         operation.setCreatedDate(new Date());
 
         operationRepository.insert(operation);
-        final List<Operation> operations = operationRepository.getByOrderId(createdOrder.getId());
+        final List<Operation> operations = operationRepository.getByPaymentId(createdPayment.getId());
         Operation authorizeOperation = null;
         for (Operation o : operations) {
             if (o.getOperationType() == Operation.OperationType.AUTHORIZE) {
@@ -94,7 +94,7 @@ public class PayCardServiceImpl implements PayCardService {
             }
         }
         if (authorizeOperation == null) {
-            throw new RuntimeException(String.format("Не найдена операция authorize у приказа %s", createdOrder));
+            throw new RuntimeException(String.format("Не найдена операция authorize у платежа %s", createdPayment));
         }
 
         // Делаем запрос на authorize в банк экваер
@@ -109,40 +109,47 @@ public class PayCardServiceImpl implements PayCardService {
         switch (bankAcquireResponse.getOperationStatus()) {
             case SUCCESS: {
                 authorizeOperation.setStatus(Operation.Status.SUCCESS);
-                createdOrder.setStatus(Order.Status.AUTHORIZE);
+                createdPayment.setStatus(Payment.Status.AUTHORIZE);
                 payCardResult.setResultCode(SUCCESS);
                 payCardResult.setMessage(PayCardResult.Message.SUCCESS);
                 break;
             }
             case DECLINED: {
                 authorizeOperation.setStatus(Operation.Status.ERROR);
-                createdOrder.setStatus(Order.Status.DECLINED);
+                createdPayment.setStatus(Payment.Status.DECLINED);
                 payCardResult.setResultCode(DECLINED);
                 payCardResult.setMessage(PayCardResult.Message.DECLINED);
                 break;
             }
             case ERROR: {
                 authorizeOperation.setStatus(Operation.Status.ERROR);
-                createdOrder.setStatus(Order.Status.ERROR);
+                createdPayment.setStatus(Payment.Status.ERROR);
                 payCardResult.setResultCode(ERROR);
                 payCardResult.setMessage(PayCardResult.Message.UNKNOWN_ERROR);
                 break;
             }
             case DO_NOT_HONOR: {
                 authorizeOperation.setStatus(Operation.Status.ERROR);
-                createdOrder.setStatus(Order.Status.DECLINED);
+                createdPayment.setStatus(Payment.Status.DECLINED);
                 payCardResult.setResultCode(DECLINED);
                 payCardResult.setMessage(PayCardResult.Message.DECLINED);
                 break;
             }
+            case TOO_MANY_CONNECTIONS: {
+                authorizeOperation.setStatus(Operation.Status.ERROR);
+                createdPayment.setStatus(Payment.Status.ERROR);
+                payCardResult.setResultCode(ERROR);
+                payCardResult.setMessage(PayCardResult.Message.BANK_BOTTLENECK_REACHED);
+                break;
+            }
         }
         authorizeOperation.setResponseParams(bankAcquireResponse.toString());
-        createdOrder.setStatusMessage(String.format("Ответ банка экваера: %s", bankAcquireResponse));
-        createdOrder.setChangedDate(new Date());
-        LOG.info(String.format("Сохраним изменения в базе данных: %s", createdOrder));
+        createdPayment.setStatusMessage(String.format("Ответ банка экваера: %s", bankAcquireResponse));
+        createdPayment.setChangedDate(new Date());
+        LOG.info(String.format("Сохраним изменения в базе данных: %s", createdPayment));
         operationRepository.update(authorizeOperation);
-        orderRepository.update(createdOrder);
-        LOG.info(String.format("Ответ: %s", payCardResult));
+        paymentRepository.update(createdPayment);
+        LOG.info(String.format("Отвечаем верстке: %s", payCardResult));
         return payCardResult;
     }
 }

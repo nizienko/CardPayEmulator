@@ -10,6 +10,10 @@ import java.util.GregorianCalendar;
 public class CardUtils {
     public static boolean isCardNumberValid(String ccNumber)
     {
+        if (ccNumber.length() < 14 || ccNumber.length() > 19) {
+            return false;
+        }
+
         int sum = 0;
         boolean alternate = false;
         for (int i = ccNumber.length() - 1; i >= 0; i--)

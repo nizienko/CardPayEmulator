@@ -1,15 +1,16 @@
 package ru.yamoney.test.services.card_pay;
 
 import ru.yamoney.test.repository.DataBaseEntity;
+import ru.yamoney.test.utils.RandomUtils;
 
 import java.util.Date;
 
 /**
  * Created by def on 20.03.2016.
  */
-public class Order implements DataBaseEntity {
+public class Payment implements DataBaseEntity {
     private Integer id;
-    private String orderN;
+    private String paymentN;
     private Date createdDate;
     private Date changedDate;
     private Status status;
@@ -80,23 +81,24 @@ public class Order implements DataBaseEntity {
         this.statusMessage = statusMessage;
     }
 
-    public String getOrderN() {
-        return orderN;
+    public String getPaymentN() {
+        return paymentN;
     }
 
-    public void setOrderN(String orderN) {
-        this.orderN = orderN;
+    public void setPaymentN(String paymentN) {
+        this.paymentN = paymentN;
     }
 
-    public void generateOrderN() {
-        orderN = "order_" + System.currentTimeMillis() ;
+    public void generatePaymentN() {
+        paymentN = RandomUtils.nextPaymentId() + "_" + System.currentTimeMillis();
     }
+
 
     @Override
     public String toString() {
-        return "Order{" +
+        return "Payment{" +
                 "id=" + id +
-                ", orderN='" + orderN + '\'' +
+                ", paymentN='" + paymentN + '\'' +
                 ", createdDate=" + createdDate +
                 ", changedDate=" + changedDate +
                 ", status=" + status +

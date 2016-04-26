@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.yamoney.test.services.card_pay.Card;
-import ru.yamoney.test.services.card_pay.PayCardServiceImpl;
 import ru.yamoney.test.services.card_pay.acquiring.BankAcquireResponse.OperationStatus;
 
 import java.math.BigDecimal;
@@ -16,9 +15,23 @@ import java.math.BigDecimal;
 @Service("moscowBankAcquireService")
 public class MoscowBankAcquireService implements BankAcquireService {
     private static final Logger LOG = LoggerFactory.getLogger(BankAcquireService.class);
+    private int activeWorks;
+
+    private synchronized void addWorker(){
+        activeWorks++;
+    }
+
+    private synchronized void delWorker(){
+        activeWorks--;
+    }
+
+    private boolean idBottleNeckReached(){
+        return activeWorks>=50;
+    }
 
     @Override
     public BankAcquireResponse authorize(Card card, BigDecimal sum) {
+        addWorker();
         final BankAcquireResponse bankAcquireResponse = new BankAcquireResponse();
         LOG.info(String.format("Отправляем запрос на авторизацию операции на сумму %s в банк экваер: %s", sum, card));
 
@@ -34,13 +47,23 @@ public class MoscowBankAcquireService implements BankAcquireService {
         else {
             bankAcquireResponse.setOperationStatus(OperationStatus.SUCCESS);
         }
-        delay();
+
+        if (idBottleNeckReached()) {
+            bankAcquireResponse.setOperationStatus(OperationStatus.TOO_MANY_CONNECTIONS);
+        }
+        else {
+            delay();
+        }
+
         LOG.info("Получен ответ от банка экваера: " + bankAcquireResponse);
+        bankAcquireResponse.setOperationType(BankAcquireResponse.OperationType.AUTHORIZE);
+        delWorker();
         return bankAcquireResponse;
     }
 
     @Override
     public BankAcquireResponse clear(String operationId, BigDecimal sum) {
+        addWorker();
         final BankAcquireResponse bankAcquireResponse = new BankAcquireResponse();
         LOG.info(String.format("Отправляем запрос на клиринг операции %s на сумму %s в банк экваер", operationId, sum));
 
@@ -56,8 +79,17 @@ public class MoscowBankAcquireService implements BankAcquireService {
         else {
             bankAcquireResponse.setOperationStatus(OperationStatus.SUCCESS);
         }
-        delay();
+
+        if (idBottleNeckReached()) {
+            bankAcquireResponse.setOperationStatus(OperationStatus.TOO_MANY_CONNECTIONS);
+        }
+        else {
+            delay();
+        }
+
         LOG.info("Получен ответ от банка экваера: " + bankAcquireResponse);
+        bankAcquireResponse.setOperationType(BankAcquireResponse.OperationType.CLEAR);
+        delWorker();
         return bankAcquireResponse;
     }
 

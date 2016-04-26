@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import ru.yamoney.test.services.card_pay.Operation;
-import ru.yamoney.test.services.card_pay.Order;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,11 +21,11 @@ public class OperationRepositoryImpl implements OperationRepository<Operation> {
     protected JdbcOperations jdbcOperations;
 
     @Override
-    public List<Operation> getByOrderId(Integer id) {
+    public List<Operation> getByPaymentId(Integer id) {
         final Object[] orderData = new Object[]{id};
-        final String sql = "SELECT id, order_id, sum, operation_type, status, bank_acquire_id, request_params, \n" +
+        final String sql = "SELECT id, payment_id, sum, operation_type, status, bank_acquire_id, request_params, \n" +
                 "       response_params, changed_date, created_date\n" +
-                "  FROM operation where order_id=?;\n";
+                "  FROM operation where payment_id=?;\n";
         return jdbcOperations.query(sql, orderData, new OperationMapper());
     }
 
@@ -34,7 +33,7 @@ public class OperationRepositoryImpl implements OperationRepository<Operation> {
     public void insert(Operation data) {
         data.setChangedDate(new Date());
         final Object[] orderData = new Object[]{
-                data.getOrderId(),
+                data.getPaymentId(),
                 data.getSum(),
                 data.getOperationType().getCode(),
                 data.getStatus().getCode(),
@@ -45,7 +44,7 @@ public class OperationRepositoryImpl implements OperationRepository<Operation> {
                 data.getCreatedDate()
         };
         final String sql = "INSERT INTO operation(\n" +
-                "            order_id, sum, operation_type, status, bank_acquire_id, request_params, \n" +
+                "            payment_id, sum, operation_type, status, bank_acquire_id, request_params, \n" +
                 "            response_params, changed_date, created_date)\n" +
                 "    VALUES (?, ?, ?, ?, ?, ?, \n" +
                 "            ?, ?, ?);\n";
@@ -56,7 +55,7 @@ public class OperationRepositoryImpl implements OperationRepository<Operation> {
     public void update(Operation data) {
         data.setChangedDate(new Date());
         final Object[] orderData = new Object[]{
-                data.getOrderId(),
+                data.getPaymentId(),
                 data.getSum(),
                 data.getOperationType().getCode(),
                 data.getStatus().getCode(),
@@ -68,7 +67,7 @@ public class OperationRepositoryImpl implements OperationRepository<Operation> {
                 data.getId()
         };
         final String sql = "UPDATE operation\n" +
-                "   SET order_id=?, sum=?, operation_type=?, status=?, bank_acquire_id=?, \n" +
+                "   SET payment_id=?, sum=?, operation_type=?, status=?, bank_acquire_id=?, \n" +
                 "       request_params=?, response_params=?, changed_date=?, created_date=?\n" +
                 " WHERE id=?;\n";
         jdbcOperations.update(sql, orderData);
@@ -87,7 +86,7 @@ public class OperationRepositoryImpl implements OperationRepository<Operation> {
     @Override
     public Operation fetchById(long id) {
         final Object[] orderData = new Object[]{id};
-        final String sql = "SELECT id, order_id, sum, operation_type, status, bank_acquire_id, request_params, \n" +
+        final String sql = "SELECT id, payment_id, sum, operation_type, status, bank_acquire_id, request_params, \n" +
                 "       response_params, changed_date, created_date\n" +
                 "  FROM operation where id=?;\n";
         return jdbcOperations.queryForObject(sql, orderData, new OperationMapper());
@@ -99,7 +98,7 @@ public class OperationRepositoryImpl implements OperationRepository<Operation> {
         public Operation mapRow(ResultSet resultSet, int i) throws SQLException {
             final Operation operation = new Operation();
             operation.setId(resultSet.getInt("id"));
-            operation.setOrderId(resultSet.getInt("order_id"));
+            operation.setPaymentId(resultSet.getInt("payment_id"));
             operation.setSum(resultSet.getBigDecimal("sum"));
             operation.setOperationType(Operation.OperationType.getOperationType(resultSet.getInt("operation_type")));
             operation.setStatus(Operation.Status.getStatus(resultSet.getInt("status")));

@@ -40,6 +40,4 @@ public class CardPayTest {
         PayCardResult result = payCardService.payViaCard(card, BigDecimal.TEN, "Тестовый магазин");
         assertTrue(result.getResultCode() == PayCardResult.Code.SUCCESS);
     }
-
-
 }

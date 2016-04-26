@@ -1,12 +1,12 @@
 package ru.yamoney.test.services.card_pay;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 import ru.yamoney.test.repository.OperationRepository;
 import ru.yamoney.test.repository.PaymentRepository;
 import ru.yamoney.test.services.card_pay.acquiring.BankAcquireResponse;
@@ -16,13 +16,13 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by nizienko on 03.04.2016.
+ * Created by nizienko on 26.04.2016.
  */
 
-//@Service
+@Service
 @EnableScheduling
-public class ClearingServiceImpl implements ClearingService {
-    private static final Logger LOG = LoggerFactory.getLogger(ClearingServiceImpl.class);
+public class ParallelClearingServiceImpl implements ClearingService {
+    private static final Logger LOG = LoggerFactory.getLogger(ParallelClearingServiceImpl.class);
 
     @Autowired
     @Qualifier("paymentRepository")
@@ -30,7 +30,7 @@ public class ClearingServiceImpl implements ClearingService {
 
     @Autowired
     @Qualifier("operationRepository")
-    private OperationRepository operationRepository;
+    private OperationRepository<Operation> operationRepository;
 
     @Autowired
     @Qualifier("moscowBankAcquireService")
@@ -38,7 +38,8 @@ public class ClearingServiceImpl implements ClearingService {
 
     @Scheduled(fixedDelay = 10000)
     public void clearPayments() {
-        for (Object o : paymentRepository.fetchForClearing()) {
+        paymentRepository.fetchForClearing().parallelStream().forEach(o ->
+        {
             final Payment payment = (Payment) o;
             LOG.info(String.format("Найден платеж для которого требуется провести клиринг: %s", payment));
             List<Operation> operations = operationRepository.getByPaymentId(payment.getId());
@@ -127,7 +128,6 @@ public class ClearingServiceImpl implements ClearingService {
             LOG.info(String.format("Сохраним изменения в базе данных: %s", payment));
             operationRepository.update(clearingOperation);
             paymentRepository.update(payment);
-        }
+        });
     }
 }
-

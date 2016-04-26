@@ -24,7 +24,7 @@ public class BankAcquireResponse {
         this.operationStatus = operationStatus;
     }
     public static enum OperationStatus {
-        SUCCESS, ERROR, DECLINED, DO_NOT_HONOR
+        SUCCESS, ERROR, DECLINED, DO_NOT_HONOR, TOO_MANY_CONNECTIONS
     }
 
     public static enum OperationType {

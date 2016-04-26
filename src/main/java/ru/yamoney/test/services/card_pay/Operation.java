@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class Operation implements DataBaseEntity {
     private Integer id;
-    private Integer orderId;
+    private Integer paymentId;
     private OperationType operationType;
     private Status status;
     private BigDecimal sum;
@@ -75,12 +75,12 @@ public class Operation implements DataBaseEntity {
         this.id = id;
     }
 
-    public Integer getOrderId() {
-        return orderId;
+    public Integer getPaymentId() {
+        return paymentId;
     }
 
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
+    public void setPaymentId(Integer paymentId) {
+        this.paymentId = paymentId;
     }
 
     public OperationType getOperationType() {
@@ -151,7 +151,7 @@ public class Operation implements DataBaseEntity {
     public String toString() {
         return "Operation{" +
                 "id=" + id +
-                ", orderId=" + orderId +
+                ", paymentId=" + paymentId +
                 ", operationType=" + operationType +
                 ", status=" + status +
                 ", sum=" + sum +
